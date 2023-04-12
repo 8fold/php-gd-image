@@ -1,7 +1,7 @@
 {
   "name": "8fold/php-gd-image",
   "type": "library",
-  "description": "",
+  "description": "Class-based wrapper for PHP's image processing capabilities.",
   "license": "mixed",
   "authors": [
     {
@@ -11,8 +11,6 @@
       "role": "Lead Developer"
     }
   ],
-  "support": {
-  },
   "require": {
     "php": "^8.1"
   },

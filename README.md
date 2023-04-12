@@ -16,6 +16,7 @@ Alternatives include:
 
 - [ShadeSoft/GDImage](https://github.com/ShadeSoft/GDImage/blob/8e34ebb4869d55ee585d2299c89d41e149d50910/src/Sizer.php)
 - [delfimox/GDImage](https://github.com/delfimov/GDImage/blob/master/src/GDImage.php)
+- [hbsolutions-ru/php-gd-image](https://github.com/hbsolutions-ru/php-gd-image)
 
 ## Details
 
