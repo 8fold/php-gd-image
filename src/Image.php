@@ -113,6 +113,10 @@ class Image
             return EnvironmentError::FailedToParseUrl;
         }
 
+        if (array_key_exists('path', $url) === false) {
+            return EnvironmentError::UrlPathNotFound;
+        }
+
         $path  = $url['path'];
         $parts = explode('/', $path);
 
