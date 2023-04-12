@@ -1,5 +1,5 @@
 {
-  "name": "vendor/project",
+  "name": "8fold/php-gd-image",
   "type": "library",
   "description": "",
   "license": "mixed",
@@ -14,19 +14,21 @@
   "support": {
   },
   "require": {
-    "php": "^7.3 || ^7.4 || ^8.0 || ^8.1"
+    "php": "^8.1"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.10",
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^10.0",
     "squizlabs/php_codesniffer": "^3.7"
   },
   "autoload": {
     "psr-4": {
+      "Eightfold\\Image\\": "./src"
     }
   },
   "autoload-dev": {
     "psr-4": {
+      "Eightfold\\Image\\Tests\\": "./tests"
     }
   },
   "config": {
