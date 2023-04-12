@@ -2,7 +2,7 @@
   "name": "8fold/php-gd-image",
   "type": "library",
   "description": "Class-based wrapper for PHP's image processing capabilities.",
-  "license": "mixed",
+  "license": "MIT",
   "authors": [
     {
       "name": "Josh Bruce",
