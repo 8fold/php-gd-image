@@ -35,6 +35,23 @@ class ImageTest extends TestCase
     /**
      * @test
      */
+    public function can_get_file_from_url(): void
+    {
+        $expected = 'image.png';
+
+        $result = Image::filenameFromUrl(
+            'https://ex.ample/some/path/image.png?query=1#text-fragment'
+        );
+
+        $this->assertSame(
+            $expected,
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
     public function can_scale(): void
     {
         $expected = 37;

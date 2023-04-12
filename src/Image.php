@@ -29,6 +29,14 @@ class Image
         string $url,
         string $filename
     ): self|ImageError|EnvironmentError {
+        if (str_contains($filename, '.') === false) {
+            $file = self::filenameFromUrl($url);
+            if (is_string($file) === false) {
+                return $file;
+            }
+            $filename = $filename . '/' . $file;
+        }
+
         $copied = self::copiedUrlToLocalpath($url, $filename);
         if (is_bool($copied) === false) {
             return $copied;
@@ -96,6 +104,19 @@ class Image
         }
 
         return copy($from, $to);
+    }
+
+    public static function filenameFromUrl(string $url): string|EnvironmentError
+    {
+        $url = parse_url($url);
+        if ($url === false) {
+            return EnvironmentError::FailedToParseUrl;
+        }
+
+        $path  = $url['path'];
+        $parts = explode('/', $path);
+
+        return array_pop($parts);
     }
 
     private static function didMakeDirectoryFor(string $filename): bool
