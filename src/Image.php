@@ -29,7 +29,9 @@ class Image
         string $url,
         string $filename
     ): self|ImageError|EnvironmentError {
-        if (str_contains($filename, '.') === false) {
+        $parts = explode('/', $filename);
+        $last  = array_pop($parts);
+        if (str_contains($last, '.') === false) {
             $file = self::filenameFromUrl($url);
             if (is_string($file) === false) {
                 return $file;
