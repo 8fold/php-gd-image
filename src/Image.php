@@ -160,9 +160,14 @@ class Image
         return $this->image;
     }
 
-    public function filename(): string
+    public function filename(bool $includePath = true): string
     {
-        return $this->filename;
+        if ($includePath) {
+            return $this->filename;
+        }
+
+        $parts = explode('/', $this->filename);
+        return array_pop($parts);
     }
 
     public function scale(float $scale, string $filename): self|ImageError

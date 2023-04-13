@@ -35,6 +35,22 @@ class ImageTest extends TestCase
     /**
      * @test
      */
+    public function can_get_file_only(): void
+    {
+        $expected = '8fold-jewel-small.jpg';
+
+        $result = Image::atLocalPath(__DIR__ . '/test-files/8fold-jewel-small.jpg')
+            ->filename(includePath: false);
+
+        $this->assertSame(
+            $expected,
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
     public function can_get_file_from_url(): void
     {
         $expected = 'image.png';
