@@ -21,25 +21,25 @@ class Image
      * Will overwrite image file at path.
      *
      * @param string $url Use HTTP or FTP
-     * @param string $filename Destination
+     * @param string $destination Destination
      *
      * @return self
      */
     public static function fromUrlToLocalPath(
         string $url,
-        string $filename
+        string $destination
     ): self|ImageError|EnvironmentError {
-        $parts = explode('/', $filename);
+        $parts = explode('/', $destination);
         $last  = array_pop($parts);
         if (str_contains($last, '.') === false) {
             $file = self::filenameFromUrl($url);
             if (is_string($file) === false) {
                 return $file;
             }
-            $filename = $filename . '/' . $file;
+            $destination = $destination . '/' . $file;
         }
 
-        $copied = self::copiedUrlToLocalpath($url, $filename);
+        $copied = self::copiedUrlToLocalpath($url, $destination);
         if (is_bool($copied) === false) {
             return $copied;
         }
@@ -48,16 +48,16 @@ class Image
             return ImageError::FailedToCopyFromUrl;
         }
 
-        return self::atLocalPath($filename);
+        return self::atLocalPath($destination);
     }
 
-    public static function atLocalPath(string $filename): self|ImageError
+    public static function atLocalPath(string $destination): self|ImageError
     {
-        if (is_file($filename) === false) {
+        if (is_file($destination) === false) {
             return ImageError::FileNotFound;
         }
 
-        $mimetype = mime_content_type($filename);
+        $mimetype = mime_content_type($destination);
         if (
             in_array($mimetype, ImageFormats::SUPPORTED_MIME_TYPES) === false or
             $mimetype === false
@@ -66,18 +66,18 @@ class Image
         }
 
         $image = match ($mimetype) {
-            default => imagecreatefromjpeg($filename)
+            default => imagecreatefromjpeg($destination)
         };
         if ($image === false) {
             return ImageError::UnsupportedMimeType;
         }
 
-        return self::fromImage($image, $filename);
+        return self::fromImage($image, $destination);
     }
 
-    public static function fromImage(GDImage $image, string $filename): self
+    public static function fromImage(GDImage $image, string $destination): self
     {
-        return new self($image, $filename);
+        return new self($image, $destination);
     }
 
     public static function copiedUrlToLocalPath(
@@ -125,9 +125,9 @@ class Image
         return array_pop($parts);
     }
 
-    private static function didMakeDirectoryFor(string $filename): bool
+    private static function didMakeDirectoryFor(string $destination): bool
     {
-        $dir = self::directoryFromFilename($filename);
+        $dir = self::directoryFromFilename($destination);
         if (is_dir($dir)) {
             return true;
         }
@@ -135,9 +135,9 @@ class Image
         return mkdir($dir, 0777, true);
     }
 
-    private static function directoryFromFilename(string $filename): string
+    private static function directoryFromFilename(string $destination): string
     {
-        $dir = explode('/', $filename);
+        $dir = explode('/', $destination);
         array_pop($dir);
         return implode('/', $dir);
     }
@@ -151,7 +151,7 @@ class Image
 
     final private function __construct(
         private readonly GDImage $image,
-        private readonly string $filename
+        private readonly string $destination
     ) {
     }
 
@@ -160,17 +160,18 @@ class Image
         return $this->image;
     }
 
-    public function filename(bool $includePath = true): string
+    public function destination(): string
     {
-        if ($includePath) {
-            return $this->filename;
-        }
+        return $this->destination;
+    }
 
-        $parts = explode('/', $this->filename);
+    public function filename(): string
+    {
+        $parts = explode('/', $this->destination());
         return array_pop($parts);
     }
 
-    public function scale(float $scale, string $filename): self|ImageError
+    public function scale(float $scale, string $destination): self|ImageError
     {
         $tWidth = intval($this->width() * $scale);
         $new = imagescale($this->image(), $tWidth);
@@ -178,32 +179,32 @@ class Image
             return ImageError::FailedToScaleImage;
         }
 
-        $image = self::fromImage($new, $filename);
-        if ($image->didSave($filename) === false) {
+        $image = self::fromImage($new, $destination);
+        if ($image->didSave($destination) === false) {
             return ImageError::FailedToSaveAfterScaling;
         }
 
         return $image;
     }
 
-    public function scaleToWidth(int $width, string $filename): self|ImageError
+    public function scaleToWidth(int $width, string $destination): self|ImageError
     {
         $scale = $width / $this->width();
-        return $this->scale($scale, $filename);
+        return $this->scale($scale, $destination);
     }
 
-    public function scaleToHeight(int $height, string $filename): self|ImageError
+    public function scaleToHeight(int $height, string $destination): self|ImageError
     {
         $scale = $height / $this->height();
-        return $this->scale($scale, $filename);
+        return $this->scale($scale, $destination);
     }
 
-    public function didSave(string $filename, bool $makeDirectory = true): bool
+    public function didSave(string $destination, bool $makeDirectory = true): bool
     {
-        if (self::didMakeDirectoryFor($filename) === false) {
+        if (self::didMakeDirectoryFor($destination) === false) {
             return false;
         }
-        return imagejpeg($this->image(), $filename);
+        return imagejpeg($this->image(), $destination);
     }
 
     /**
@@ -212,7 +213,7 @@ class Image
     private function getImageSize(): array
     {
         if (count($this->imageSizeInfo) === 0) {
-            $size = getimagesize($this->filename());
+            $size = getimagesize($this->destination());
             if ($size === false) {
                 return [];
             }
