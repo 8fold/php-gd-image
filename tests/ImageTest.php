@@ -40,7 +40,7 @@ class ImageTest extends TestCase
         $expected = '8fold-jewel-small.jpg';
 
         $result = Image::atLocalPath(__DIR__ . '/test-files/8fold-jewel-small.jpg')
-            ->filename(includePath: false);
+            ->filename();
 
         $this->assertSame(
             $expected,
